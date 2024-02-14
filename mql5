@@ -1,0 +1,69 @@
+
+// Program: Golden Rush EA
+// Developer's Site: forexroboteasy.com
+// Developer: Forex Robot Easy Team
+
+// Include necessary libraries and dependencies
+#include <stdlib.mqh>
+#include <stdio.mqh>
+#include <math.mqh>
+
+// Declare global variables and constants
+double g_lotSize = 0.01;  // Initial lot size
+int g_maxOrders = 5;      // Maximum number of orders allowed
+int g_magicNumber = 1234; // Magic number for identifying orders
+double g_stopLoss = 20;   // Stop loss value in pips
+double g_takeProfit = 40; // Take profit value in pips
+
+// Define the main function for the trading robot
+int OnInit()
+{
+    // Perform initialization tasks and setup trading parameters
+    Print('Golden Rush EA initialized successfully');
+    return(INIT_SUCCEEDED);
+}
+
+void OnTick()
+{
+    // Calculate moving averages on different time frames
+    double ma1 = iMA(Symbol(), 1, 5, 0, MODE_SMA, PRICE_CLOSE, 0);
+    double ma2 = iMA(Symbol(), 1, 10, 0, MODE_SMA, PRICE_CLOSE, 0);
+    double ma3 = iMA(Symbol(), 1, 20, 0, MODE_SMA, PRICE_CLOSE, 0);
+
+    // Check if entry conditions are met
+    if (ma1 > ma2 && ma2 > ma3)
+    {
+        // Open a buy order
+        int ticket = OrderSend(Symbol(), OP_BUY, g_lotSize, Ask, 0, Ask - g_stopLoss * Point, Ask + g_takeProfit * Point, 'Golden Rush EA', g_magicNumber, 0, Green);
+        if (ticket > 0)
+        {
+            Print('Buy order opened successfully');
+        }
+        else
+        {
+            Print('Failed to open buy order. Error code:', GetLastError());
+        }
+    }
+    else if (ma1 < ma2 && ma2 < ma3)
+    {
+        // Open a sell order
+        int ticket = OrderSend(Symbol(), OP_SELL, g_lotSize, Bid, 0, Bid + g_stopLoss * Point, Bid - g_takeProfit * Point, 'Golden Rush EA', g_magicNumber, 0, Red);
+        if (ticket > 0)
+        {
+            Print('Sell order opened successfully');
+        }
+        else
+        {
+            Print('Failed to open sell order. Error code:', GetLastError());
+        }
+    }
+}
+
+void OnDeinit(const int reason)
+{
+    // Perform cleanup tasks before the program exits
+    Print('Golden Rush EA deinitialized successfully');
+}
+
+// Additional functions and event handlers can be added as needed
+
